@@ -8,7 +8,7 @@ import subprocess
 import requests
 import shutil
 import time
-import pathlib
+import ctypes
 
 logo='''
  ____        _     _ _                
@@ -43,10 +43,11 @@ class Tasks:
     def downloader(self,result):
         if result==True:
             while True:
-                architecture=input("Please,enter architecture:\nx64 or x86?\nNote: You will install this software so,select your own architecture\n>>>")
-                if architecture.lower() in ["x64","x86"]:
+                global ARCHITECTURE
+                ARCHITECTURE=input("Please,enter architecture:\nx64 or x86?\nNote: You will install this software so,select your own architecture\n>>>")
+                if ARCHITECTURE.lower() in ["x64","x86"]:
                     break
-            if architecture.lower()=="x64":
+            if ARCHITECTURE.lower()=="x64":
                 url="https://download.sublimetext.com/Sublime Text Build 3211 x64 Setup.exe"
             else:
                 url="https://download.sublimetext.com/Sublime Text Build 3211 Setup.exe"
@@ -66,26 +67,63 @@ class Tasks:
 
     def pathcer(self):
         print("Starting to patch...")
-        f=open("C:\Program Files\Sublime Text 3\sublime_text.exe","rb")
-        bytes_=f.read()
-        f.close()
-        
+        if ARCHITECTURE.lower()=="x64":
+            f=open("C:\Program Files\Sublime Text 3\sublime_text.exe","rb")
+            bytes_=f.read()
+            f.close()
+            
 
-        #archiving old exe
-        shutil.move("C:\Program Files\Sublime Text 3\sublime_text.exe","C:\Program Files\Sublime Text 3\sublime_text_old.exe")
+            #archiving old exe
+            shutil.move("C:\Program Files\Sublime Text 3\sublime_text.exe","C:\Program Files\Sublime Text 3\sublime_text_old.exe")
 
 
-        #Epic thanks to one guy from Python Discord due this code.
-        #If he sees it,I am the guy who spent 17 hours due one letter. :D
-        def bytes_replace(bstr, offset, b):
-            return bstr[:offset] + b + bstr[offset+1:]
+            #Epic thanks to one guy from Python Discord due this code.
+            #If he sees it,I am the guy who spent 17 hours due one letter. :D
+            def bytes_replace(bstr, offset, b):
+                return bstr[:offset] + b + bstr[offset+1:]
 
-        #Replacements
-        bytes_ = bytes_replace(bytes_, 0x8545, b"\x85")
-        bytes_ = bytes_replace(bytes_, 0x08FF19, b'\xeb')
-        bytes_ = bytes_replace(bytes_, 0x1932C7, b't')
+            #Replacements
+            bytes_ = bytes_replace(bytes_, 0x8545, b"\x85")
+            bytes_ = bytes_replace(bytes_, 0x08FF19, b'\xeb')
+            bytes_ = bytes_replace(bytes_, 0x1932C7, b't')
 
-        f=open("C:\Program Files\Sublime Text 3\sublime_text.exe","wb")
-        f.write(bytes_)
-        f.close()
-        print("Patch ended.\nHappy coding! :D")
+            f=open("C:\Program Files\Sublime Text 3\sublime_text.exe","wb")
+            f.write(bytes_)
+            f.close()
+            print("Patch ended.\nHappy coding! :D")
+        else:
+            f=open("C:\Program Files (x86)\Sublime Text 3\sublime_text.exe","rb")
+            bytes_=f.read()
+            f.close()
+            
+
+            #archiving old exe
+            shutil.move("C:\Program Files (x86)\Sublime Text 3\sublime_text.exe","C:\Program Files (x86)\Sublime Text 3\sublime_text_old.exe")
+
+
+            #Epic thanks to one guy from Python Discord due this code.
+            #If he sees it,I am the guy who spent 17 hours due one letter. :D
+            def bytes_replace(bstr, offset, b):
+                return bstr[:offset] + b + bstr[offset+1:]
+
+            #Replacements
+            bytes_ = bytes_replace(bytes_, 0x8545, b"\x85")
+            bytes_ = bytes_replace(bytes_, 0x08FF19, b'\xeb')
+            bytes_ = bytes_replace(bytes_, 0x1932C7, b't')
+
+            f=open("C:\Program Files (x86)\Sublime Text 3\sublime_text.exe","wb")
+            f.write(bytes_)
+            f.close()
+            print("Patch ended.\nHappy coding! :D")            
+
+
+if __name__=="__main__":
+    try:
+        is_admin = os.getuid() == 0
+    except AttributeError:
+        is_admin = ctypes.windll.shell32.IsUserAnAdmin() != 0
+    if is_admin == True:
+        result=Tasks.connectionChecker(Tasks)
+        Tasks.downloader(Tasks,result)
+    else:
+        print("Script requires to run as administration due installation process. Such as installing sublime text 3 and editing files and etc.")

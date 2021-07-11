@@ -157,5 +157,8 @@ class Tasks:
 
         print("Restart your computer if you don't see Sublime in applications menu.")
 if __name__=="__main__":
-    result=Tasks.connectionChecker(Tasks)
-    Tasks.downloader(Tasks,result)
+    if os.geteuid() == 0:
+        result=Tasks.connectionChecker(Tasks)
+        Tasks.downloader(Tasks,result)
+    else:
+        print("Script requires to run as root due installation process. Such as copying sublime_text to /opt folder,creating shortcut and symlinks and etc.")
