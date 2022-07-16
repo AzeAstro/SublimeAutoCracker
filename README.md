@@ -43,7 +43,7 @@ Windows 10
 
 
 2)Wanna Mac version??  
-Contact with me in Discord if u have Mac. Name: Running Child#1366
+Contact with me in Discord if u have Mac. Name: Alpine#4633
 
 3)Wanna updated sublime??  
 It will depend on bugs in sublime text 4
