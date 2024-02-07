@@ -1,3 +1,7 @@
+# DEPRECATED  
+Seems like Sublime fixed the bug ;(  
+
+ 
 # SublimeAutoCracker
  Automatized python script for cracking Sublime Text 3.2
 
